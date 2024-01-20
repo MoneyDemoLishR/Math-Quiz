@@ -98,17 +98,19 @@ function nextQuestion() {
 }
 
 function getOptions() {
-  for (let i = 0; i < 4; i++ && i != ansOpt) {
-    if (answer > 100) {
-      buttons[i].innerHTML = answer + Math.floor(Math.random() * answer * 0.4);
-    } else if (answer > 30 && answer < 100) {
-      buttons[i].innerHTML = answer + Math.floor(Math.random() * answer * 0.6);
-    } else {
-      buttons[i].innerHTML = Math.floor(Math.random() * 100);
-    }
+  for (let i = 0; i < 4; i++) {
+    if (i !== ansOpt) {
+      if (answer > 100) {
+        buttons[i].innerHTML = answer + Math.floor(Math.random() * answer * 0.4);
+      } else if (answer > 30 && answer < 100) {
+        buttons[i].innerHTML = answer + Math.floor(Math.random() * answer * 0.6);
+      } else {
+        buttons[i].innerHTML = Math.floor(Math.random() * 100);
+      }
 
-    if (answer < 0) {
-      buttons[i].innerHTML = "-" + buttons[i].innerHTML;
+      if (answer < 0) {
+        buttons[i].innerHTML = "-" + buttons[i].innerHTML;
+      }
     }
   }
   ansOpt = Math.floor(Math.random() * 4);
@@ -138,13 +140,18 @@ function doWhenIncorrect(i) {
   selectedQuestions[qNo.innerHTML - 1].status = "incorrect";
 }
 
-function outro(i) {
+function outro() {
   setTimeout(() => {
     nextQuestion();
-    buttons[i].style.color = "#000";
-    buttons[i].style.backgroundColor = "rgba(0, 0, 0, 0.1)";
+
+    // Reset styles for all buttons
+    for (let i = 0; i < buttons.length; i++) {
+      buttons[i].style.color = "#000";
+      buttons[i].style.backgroundColor = "rgba(0, 0, 0, 0.1)";
+    }
   }, 500);
 }
+
 
 function lastmessage() {
   clearInterval(t);
@@ -182,6 +189,17 @@ function timed() {
     }
   }, 200)
 }
+function darkenButtonOnHover(i) {
+  buttons[i].addEventListener('mouseover', () => {
+    buttons[i].style.color = "#fff";
+    buttons[i].style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+  });
+
+  buttons[i].addEventListener('mouseout', () => {
+    buttons[i].style.color = "#000";
+    buttons[i].style.backgroundColor = "rgba(0, 0, 0, 0.1)";
+  });
+}
 
 buttons[0].addEventListener('click', () => {
   if (buttons[0].innerText == answer) {
@@ -190,8 +208,11 @@ buttons[0].addEventListener('click', () => {
     doWhenIncorrect(0);
   }
   clearInterval(t);
-  outro(0);
+  outro();
 });
+
+darkenButtonOnHover(0);
+
 buttons[1].addEventListener('click', () => {
   if (buttons[1].innerText == answer) {
     doWhenCorrect(1);
@@ -199,17 +220,23 @@ buttons[1].addEventListener('click', () => {
     doWhenIncorrect(1);
   }
   clearInterval(t);
-  outro(1);
+  outro();
 });
+
+darkenButtonOnHover(1);
+
 buttons[2].addEventListener('click', () => {
   if (buttons[2].innerText == answer) {
     doWhenCorrect(2);
   } else {
-    doWhenIncorrect(2);;
+    doWhenIncorrect(2);
   }
   clearInterval(t);
-  outro(2);
+  outro();
 });
+
+darkenButtonOnHover(2);
+
 buttons[3].addEventListener('click', () => {
   if (buttons[3].innerText == answer) {
     doWhenCorrect(3);
@@ -217,8 +244,11 @@ buttons[3].addEventListener('click', () => {
     doWhenIncorrect(3);
   }
   clearInterval(t);
-  outro(3);
+  outro();
 });
+
+darkenButtonOnHover(3);
+
 
 // Call loadQuestions before starting the game
 async function startGame() {
